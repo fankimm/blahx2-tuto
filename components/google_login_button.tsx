@@ -11,7 +11,7 @@ const GoogleLoginButton = function () {
         bgColor="#4285f4"
         color="white"
         colorScheme="blue"
-        leftIcon={<img src="/google.svg" alt="google logo" />}
+        leftIcon={<img src="/google.svg" alt="google logo" style={{ background: 'white', padding: '8px' }} />}
       >
         구글 계정으로 시작하기
       </Button>

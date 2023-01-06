@@ -12,7 +12,7 @@ const IndexPage: NextPage = function () {
           <Heading>#BlahBlah</Heading>
         </Flex>
       </Box>
-      <Center>
+      <Center mt="20">
         <GoogleLoginButton />
       </Center>
     </ServiceLayout>
