@@ -22,7 +22,7 @@ const GNB = function () {
   );
   const authInitialized = loading || !authUser;
   return (
-    <Box>
+    <Box borderBottom={1} borderStyle="solid" borderColor="gray.200" bgColor="white">
       <Flex minH="60px" py={{ base: 2 }} px={{ base: 4 }} align="center" maxW="md" mx="auto">
         <Spacer />
         <Box flex="1">
