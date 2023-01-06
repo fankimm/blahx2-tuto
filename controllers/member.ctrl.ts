@@ -25,8 +25,10 @@ async function findByScreenName(req: NextApiRequest, res: NextApiResponse) {
   const extractScreenName = Array.isArray(screenName) ? screenName[0] : screenName;
   const findResult = await MemberModel.findByScreenName(extractScreenName);
   if (!findResult) {
-    return res.status(404).end;
+    console.log('findByScreenName : 결과를 찾을수 없음');
+    return res.status(404).end();
   }
+  console.log('findByScreenName : 결과를 찾음');
   res.status(200).json(findResult);
 }
 
