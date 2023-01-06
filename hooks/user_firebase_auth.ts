@@ -11,7 +11,6 @@ const useFirebaseAuth = () => {
     try {
       const signInResult = await signInWithPopup(FirebaseClient.getInstance().Auth, provider);
       if (signInResult.user) {
-        console.info(signInResult.user);
         const resp = await fetch('/api/members.add', {
           method: 'POST',
           body: JSON.stringify({
@@ -25,7 +24,6 @@ const useFirebaseAuth = () => {
           },
         });
         const respData = await resp.json();
-        console.info(respData);
       }
     } catch (err) {
       console.error(err);

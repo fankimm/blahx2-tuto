@@ -36,7 +36,6 @@ export default class FirebaseAdmin {
     };
 
     admin.initializeApp({ credential: admin.credential.cert(config.credential) });
-    console.info('bootsrap firebase admin');
   }
 
   public get Firebase(): FirebaseFirestore.Firestore {
