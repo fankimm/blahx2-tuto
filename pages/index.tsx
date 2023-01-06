@@ -2,8 +2,10 @@ import { NextPage } from 'next';
 import { Box, Center, Flex, Heading } from '@chakra-ui/react';
 import ServiceLayout from '@/components/service_layout';
 import GoogleLoginButton from '@/components/google_login_button';
+import { useAuth } from '@/contexts/auth_user.context';
 
 const IndexPage: NextPage = function () {
+  const { signInWithGoogle } = useAuth();
   return (
     <ServiceLayout title="test">
       <Box maxW="md" mx="auto">
@@ -13,7 +15,7 @@ const IndexPage: NextPage = function () {
         </Flex>
       </Box>
       <Center mt="20">
-        <GoogleLoginButton />
+        <GoogleLoginButton onClick={signInWithGoogle} />
       </Center>
     </ServiceLayout>
   );
