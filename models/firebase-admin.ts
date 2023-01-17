@@ -38,7 +38,7 @@ export default class FirebaseAdmin {
     admin.initializeApp({ credential: admin.credential.cert(config.credential) });
   }
 
-  public get Firebase(): FirebaseFirestore.Firestore {
+  public get Firestore(): FirebaseFirestore.Firestore {
     if (!this.init) {
       this.bootstrap();
     }
