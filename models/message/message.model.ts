@@ -1,4 +1,5 @@
 import { firestore } from 'firebase-admin';
+import { transition } from '@chakra-ui/react';
 import { InMessage, InMessageServer } from '@/models/message/in_message';
 import CustomServerError from '@/controllers/error/custom_server_error';
 import FirebaseAdmin from '../firebase-admin';
@@ -68,9 +69,30 @@ async function list({ uid }: { uid: string }) {
   return listData;
 }
 
+const postReply = async ({ uid, messageId, reply }: { uid: string; messageId: string; reply: string }) => {
+  const memberRef = Firestore.collection(MEMBER_COL).doc(uid);
+  const messageRef = Firestore.collection(MEMBER_COL).doc(uid).collection(MESSAGE_COL).doc(messageId);
+  await Firestore.runTransaction(async (transaction) => {
+    const memberDoc = await transaction.get(memberRef);
+    const messageDoc = await transaction.get(messageRef);
+    if (!memberDoc.exists) {
+      throw new CustomServerError({ statusCode: 400, message: '존재하지 않는 사용자' });
+    }
+    if (!messageDoc.exists) {
+      throw new CustomServerError({ statusCode: 400, message: '존재하지 않는 문서' });
+    }
+    const messageData = messageDoc.data() as InMessageServer;
+    if (messageData.reply) {
+      throw new CustomServerError({ statusCode: 400, message: '이미 등록한 댓글 입니다.' });
+    }
+    await transaction.update(messageRef, { reply, replAt: firestore.FieldValue.serverTimestamp() });
+  });
+};
+
 const MessageModel = {
   post,
   list,
+  postReply,
 };
 
 export default MessageModel;
