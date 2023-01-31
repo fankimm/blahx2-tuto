@@ -1,7 +1,8 @@
 import moment from 'moment';
 
 const convertDateToString = (dateString: string): string => {
-  const dateTime = moment(dateString, moment.ISO_8601).millisecond(0);
+  console.log('dateString', dateString);
+  const dateTime = moment(dateString);
   const now = moment();
   const diff = now.diff(dateTime);
   console.log(diff);

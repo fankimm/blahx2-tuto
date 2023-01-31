@@ -38,10 +38,24 @@ async function postReply(req: NextApiRequest, res: NextApiResponse) {
   await MessageModel.postReply({ uid, messageId, reply });
   return res.status(201).end();
 }
+async function get(req: NextApiRequest, res: NextApiResponse) {
+  const { uid, messageId } = req.query;
+  if (!uid) {
+    throw new BadReqError('uid 누락');
+  }
+  if (!messageId) {
+    throw new BadReqError('메시지 ID 누락');
+  }
+  const uidToStr = Array.isArray(uid) ? uid[0] : uid;
+  const messageIdToStr = Array.isArray(messageId) ? messageId[0] : messageId;
+  const data = await MessageModel.get({ uid: uidToStr, messageId: messageIdToStr });
+  return res.status(200).json(data);
+}
 
 const MessageCtrl = {
   post,
   list,
+  get,
   postReply,
 };
 

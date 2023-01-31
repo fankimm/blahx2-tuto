@@ -71,6 +71,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
   const [message, setMessage] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [messageList, setMessageList] = useState<InMessage[]>([]);
+  const [messageListTrigger, setMessageListTrigger] = useState(false);
   const toast = useToast();
   const { authUser } = useAuth();
   const fetchMessageList = async (uid: string) => {
@@ -78,16 +79,36 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
       const res = await fetch(`/api/messages.list?uid=${uid}`);
       if (res.status === 200) {
         const data = await res.json();
+        console.table('data', data);
         setMessageList(data);
       }
     } catch (err) {
       console.error(err);
     }
   };
+  async function fetchMessageInfo({ uid, messageId }: { uid: string; messageId: string }) {
+    try {
+      const res = await fetch(`/api/messages.info?uid=${uid}&messageId=${messageId}`);
+      if (res.status === 200) {
+        const data: InMessage = await res.json();
+        setMessageList((prev) => {
+          const findIndex = prev.findIndex((fv) => fv.id === data.id);
+          if (findIndex >= 0) {
+            const updateArr = [...prev];
+            updateArr[findIndex] = data;
+            return updateArr;
+          }
+          return prev;
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
   useEffect(() => {
     if (!userInfo) return;
     fetchMessageList(userInfo.uid);
-  }, []);
+  }, [userInfo, messageListTrigger]);
   console.log(userInfo);
   if (!userInfo) {
     return <p>사용자를 찾을 수 없습니다.</p>;
@@ -155,6 +176,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
                 if (!messageResp.result) {
                   toast({ title: '메시지 등록 실패', position: 'top-right' });
                 }
+                setMessageListTrigger((prev) => !prev);
                 setMessage('');
               }}
               disabled={!message}
@@ -196,6 +218,9 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
               displayName={userInfo.displayName ?? ''}
               photoURL={userInfo.photoURL ?? 'https://bit.ly/broken-link'}
               isOwner={authUser && authUser.uid === userInfo.uid}
+              onSendComplete={() => {
+                fetchMessageInfo({ uid: userInfo.uid, messageId: messageData.id });
+              }}
             />
           ))}
         </VStack>
