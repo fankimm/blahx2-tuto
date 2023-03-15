@@ -224,6 +224,9 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
             />
           ))}
         </VStack>
+        <Button width="full" mt="2" fontSize="sm">
+          더보기
+        </Button>
       </Box>
     </ServiceLayout>
   );

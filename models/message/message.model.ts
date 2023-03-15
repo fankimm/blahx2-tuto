@@ -52,7 +52,7 @@ async function list({ uid }: { uid: string }) {
     if (!memberDoc.exists) {
       throw new CustomServerError({ statusCode: 400, message: '존재하지 않는 사용자' });
     }
-    const messageCol = memberRef.collection(MESSAGE_COL);
+    const messageCol = memberRef.collection(MESSAGE_COL).orderBy('createAt', 'desc');
     const messageColDoc = await transaction.get(messageCol);
     const data = messageColDoc.docs.map((mv) => {
       const docData = mv.data() as Omit<InMessageServer, 'id'>;
