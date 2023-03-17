@@ -70,17 +70,25 @@ async function postMessage({
 const UserHomePage: NextPage<Props> = function ({ userInfo }) {
   const [message, setMessage] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [messageList, setMessageList] = useState<InMessage[]>([]);
   const [messageListTrigger, setMessageListTrigger] = useState(false);
   const toast = useToast();
   const { authUser } = useAuth();
   const fetchMessageList = async (uid: string) => {
     try {
-      const res = await fetch(`/api/messages.list?uid=${uid}`);
+      const res = await fetch(`/api/messages.list?uid=${uid}&page=${page}&size=10`);
       if (res.status === 200) {
-        const data = await res.json();
-        console.table('data', data);
-        setMessageList(data);
+        const data: {
+          totalElements: number;
+          totalPages: number;
+          page: number;
+          size: number;
+          content: InMessage[];
+        } = await res.json();
+        setTotalPage(data.totalPages);
+        setMessageList((prev) => [...prev, ...data.content]);
       }
     } catch (err) {
       console.error(err);
@@ -108,7 +116,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
   useEffect(() => {
     if (!userInfo) return;
     fetchMessageList(userInfo.uid);
-  }, [userInfo, messageListTrigger]);
+  }, [userInfo, messageListTrigger, page]);
   console.log(userInfo);
   if (!userInfo) {
     return <p>사용자를 찾을 수 없습니다.</p>;
@@ -224,9 +232,18 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
             />
           ))}
         </VStack>
-        <Button width="full" mt="2" fontSize="sm">
-          더보기
-        </Button>
+        {totalPage > page && (
+          <Button
+            width="full"
+            mt="2"
+            fontSize="sm"
+            onClick={() => {
+              setPage((p) => p + 1);
+            }}
+          >
+            더보기
+          </Button>
+        )}
       </Box>
     </ServiceLayout>
   );
