@@ -24,13 +24,14 @@ import FirebaseClient from '@/models/firebase-client';
 interface Props {
   uid: string;
   displayName: string;
+  screenName: string;
   isOwner: boolean;
   item: InMessage;
   photoURL: string;
   onSendComplete: () => void;
 }
 
-const MessageItem = function ({ uid, isOwner, photoURL, item, displayName, onSendComplete }: Props) {
+const MessageItem = function ({ uid, screenName, isOwner, photoURL, item, displayName, onSendComplete }: Props) {
   const toast = useToast();
   const haveReply = item.reply !== undefined;
   const isDeny = item.deny !== undefined ? item.deny === true : false;
@@ -102,6 +103,13 @@ const MessageItem = function ({ uid, isOwner, photoURL, item, displayName, onSen
                 size="xs"
               />
               <MenuList>
+                <MenuItem
+                  onClick={() => {
+                    window.location.href = `/${screenName}/${item.id}`;
+                  }}
+                >
+                  메시지 상세 보기
+                </MenuItem>
                 <MenuItem
                   onClick={() => {
                     updateMessage({ deny: item.deny !== undefined ? !item.deny : true });

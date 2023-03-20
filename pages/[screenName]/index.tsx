@@ -25,6 +25,7 @@ import { InMessage } from '@/models/message/in_message';
 
 interface Props {
   userInfo: InAuthUser | null;
+  screenName: string;
 }
 
 async function postMessage({
@@ -69,7 +70,7 @@ async function postMessage({
   }
 }
 
-const UserHomePage: NextPage<Props> = function ({ userInfo }) {
+const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
   const [message, setMessage] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [page, setPage] = useState(1);
@@ -231,6 +232,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
               key={`message-item-${userInfo.uid}-${messageData.id}`}
               item={messageData}
               uid={userInfo.uid}
+              screenName={screenName}
               displayName={userInfo.displayName ?? ''}
               photoURL={userInfo.photoURL ?? 'https://bit.ly/broken-link'}
               isOwner={authUser && authUser.uid === userInfo.uid}
@@ -263,19 +265,21 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
     return {
       props: {
         userInfo: null,
+        screenName: '',
       },
     };
   }
+  const screenNameToStr = Array.isArray(screenName) ? screenName[0] : screenName;
   try {
     const protocol = process.env.PROTOCOL || 'http';
     const host = process.env.HOST || 'localhost';
     const port = process.env.PORT || '3000';
     const baseUrl = `${protocol}://${host}:${port}`;
     const userInfoRes: AxiosResponse<InAuthUser> = await axios(`${baseUrl}/api/user.info/${screenName}`);
-    console.log(userInfoRes.data);
     return {
       props: {
         userInfo: userInfoRes.data ?? null,
+        screenName: screenNameToStr,
       },
     };
   } catch (err) {
@@ -283,6 +287,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ query }) =
     return {
       props: {
         userInfo: null,
+        screenName: '',
       },
     };
   }
