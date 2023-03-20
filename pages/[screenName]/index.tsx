@@ -235,7 +235,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
               screenName={screenName}
               displayName={userInfo.displayName ?? ''}
               photoURL={userInfo.photoURL ?? 'https://bit.ly/broken-link'}
-              isOwner={authUser && authUser.uid === userInfo.uid}
+              isOwner={authUser !== null && authUser.uid === userInfo.uid}
               onSendComplete={() => {
                 fetchMessageInfo({ uid: userInfo.uid, messageId: messageData.id });
               }}
