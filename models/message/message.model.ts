@@ -6,7 +6,6 @@ import FirebaseAdmin from '../firebase-admin';
 
 const MEMBER_COL = 'members';
 const MESSAGE_COL = 'messages';
-const SCR_NAME_COL = 'screen_names';
 const { Firestore } = FirebaseAdmin.getInstance();
 async function post({
   uid,
