@@ -43,7 +43,7 @@ const MessageItem = function ({ uid, isOwner, photoURL, item, displayName, onSen
       });
       return;
     }
-    const res = await fetch('api/messages.deny', {
+    const res = await fetch('/api/messages.deny', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
